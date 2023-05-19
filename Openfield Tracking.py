@@ -11,7 +11,7 @@ import csv
 
 ### CSV CREATION
 header = ['ID','ExtM','intM','IntS','ExtS','DistI','DistE','Dist']
-with open('resultats.csv', 'w', newline='') as f:
+with open('Path/to/result/file', 'w', newline='') as f:
     writer = csv.writer(f)
     writer.writerow(header)
 
@@ -252,6 +252,7 @@ with open('resultats.csv', 'w', newline='') as f:
             frameNumber +=1 
 
             if (ret and frameNumber%fpsDivisionFactor==0):
+                #print(frameNumber)
                 frameCurrent, framePrevious = frame, frameCurrent
 
                 # Threshold of the difference between two consecutive frames
@@ -262,6 +263,7 @@ with open('resultats.csv', 'w', newline='') as f:
                 grayDiff = cv2.cvtColor(diff, cv2.COLOR_BGR2GRAY)
                 _, thresh = cv2.threshold(grayDiff, 50, 255, cv2.THRESH_BINARY)
 
+                #cv2.imshow('test', subImage(framePrevious, (antXBetter,antYBetter), 150))
 
                 # Rough estimation of the ant's position with the threshold image
                 changeCoords = np.argwhere(thresh == 255)
@@ -286,6 +288,9 @@ with open('resultats.csv', 'w', newline='') as f:
                 
 
                 
+
+                
+                #cv2.imshow('Part', threshPart)
                 if isMoving:
                     thresholdMovement = 0.8
                 else:
@@ -444,9 +449,8 @@ with open('resultats.csv', 'w', newline='') as f:
                 finalResults[530:580,np.argwhere(adaptedStateListMovement==-1),:]=(150,150,150)
 
 
-                path = ""
-                for s in fileDir[fA].split('/')[:-1]:
-                    path = path+s+'/'
+                #cv2.imshow('Final Results', finalResults)
+
                 cv2.imwrite(filename +' Resultats.png',finalResults)
                 cv2.waitKey(0)
                 break
@@ -492,6 +496,8 @@ with open('resultats.csv', 'w', newline='') as f:
         ax.text(centre[fA][1]*3,centre[fA][0]*2 , "Dist Int : " + str(int(distmLi)) +"\nDist Ext : "+ str(int(distmLe)) +"\nDist : "+str(int(distmL)), fontsize=10)
         ax.set_aspect("equal")
         plt.savefig(filename +" Trajet.png")
+        #plt.show()
+
 
         print("distnace parcourru en mouvement =" + str(int(distmL)))
         print("distance exterieur en mouvement =" + str(int(distmLe)))
@@ -499,6 +505,6 @@ with open('resultats.csv', 'w', newline='') as f:
         data = [os.path.basename(filename),pourcentageMoveOut,pourcentageMoveIn,pourcentageStaticIn,pourcentageStaticOut,distmLi,distmLe,distmL]
         writer.writerow(data)
 
-        cv2.destroyAllWindows()
+        # cv2.destroyAllWindows()
         cap.release()
         fA = fA+1
